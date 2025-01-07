@@ -1,61 +1,63 @@
-FROM        cm2network/steamcmd:root
+FROM	cm2network/steamcmd:root
+LABEL	MAINTAINER="https://github.com/jeffwcollins/"
 
-LABEL       MAINTAINER="https://github.com/Hermsi1337/"
+ARG	ARK_TOOLS_VERSION="1.6.64"
+#ARG	IMAGE_VERSION="dev"
 
-ARG         ARK_TOOLS_VERSION="1.6.61a"
-ARG         IMAGE_VERSION="dev"
+#ENV	IMAGE_VERSION="${IMAGE_VERSION}"
+ENV	ARK_TOOLS_DIR="${ARK_SERVER_VOLUME}/arkmanager"
+ENV	SESSION_NAME="Dockerized ARK Server with Ark Server Tools" \
+	SERVER_MAP="TheIsland" \
+	SERVER_PASSWORD="YouShallNotPass" \
+	ADMIN_PASSWORD="Th155houldD3f1n3tlyB3Chang3d" \
+	MAX_PLAYERS="20" \
+	GAME_MOD_IDS="" \
+	GAME_CLIENT_PORT="7779" \
+	UDP_SOCKET_PORT="7780" \
+	SERVER_LIST_PORT="27017" \
+	RCON_PORT="27022" \
+	ENABLE_CROSSPLAY="false" \
+	DISABLE_BATTLEYE="false" \
+	UPDATE_ON_START="false" \
+	BACKUP_ON_STOP="false" \
+	PRE_UPDATE_BACKUP="true" \
+	WARN_ON_STOP="true" \
+	ARK_TOOLS_VERSION="${ARK_TOOLS_VERSION}" \
+	ARK_SERVER_VOLUME="/app" \
+	TEMPLATE_DIRECTORY="/conf.d" \
+	STEAM_HOME="/home/${USER}" \
+	STEAM_USER="${USER}" \
+	STEAM_LOGIN="anonymous"
 
-ENV         IMAGE_VERSION="${IMAGE_VERSION}" \
-            SESSION_NAME="Dockerized ARK Server by github.com/hermsi1337" \
-            SERVER_MAP="TheIsland" \
-            SERVER_PASSWORD="YouShallNotPass" \
-            ADMIN_PASSWORD="Th155houldD3f1n3tlyB3Chang3d" \
-            MAX_PLAYERS="20" \
-            GAME_MOD_IDS="" \
-            UPDATE_ON_START="false" \
-            BACKUP_ON_STOP="false" \
-            PRE_UPDATE_BACKUP="true" \
-            WARN_ON_STOP="true" \
-            ARK_TOOLS_VERSION="${ARK_TOOLS_VERSION}" \
-            ARK_SERVER_VOLUME="/app" \
-            TEMPLATE_DIRECTORY="/conf.d" \
-            GAME_CLIENT_PORT="7777" \
-            UDP_SOCKET_PORT="7778" \
-            RCON_PORT="27020" \
-            SERVER_LIST_PORT="27015" \
-            STEAM_HOME="/home/${USER}" \
-            STEAM_USER="${USER}" \
-            STEAM_LOGIN="anonymous"
+RUN	set -x && \
+	apt-get update && \
+	apt-get install -y perl-modules \
+                               curl \
+                               lsof \
+                               libc6-i386 \
+                               lib32gcc-s1 \
+                               bzip2 \
+                               gosu \
+                               cron \
+	&& \
+	curl -L "https://github.com/arkmanager/ark-server-tools/archive/v${ARK_TOOLS_VERSION}.tar.gz" \
+	            | tar -xvzf - -C /tmp/ && \
+	bash -c "cd /tmp/ark-server-tools-${ARK_TOOLS_VERSION}/tools && bash -x install.sh ${USER}" && \
+	ln -s /usr/local/bin/arkmanager /usr/bin/arkmanager && \
+	install -d -o ${USER} ${ARK_SERVER_VOLUME} && \
+	su ${USER} -c "bash -x ${STEAMCMDDIR}/steamcmd.sh +login anonymous +quit" && \
+	apt-get -qq autoclean && apt-get -qq autoremove && apt-get -qq clean && \
+	rm -rf /tmp/* /var/cache/*
 
-ENV         ARK_TOOLS_DIR="${ARK_SERVER_VOLUME}/arkmanager"
+COPY	bin/    /
+COPY	conf.d  ${TEMPLATE_DIRECTORY}
 
-RUN         set -x && \
-            apt-get update && \
-            apt-get install -y  perl-modules \
-                                curl \
-                                lsof \
-                                libc6-i386 \
-                                lib32gcc-s1 \
-                                bzip2 \
-                                gosu \
-                                cron \
-            && \
-            curl -L "https://github.com/arkmanager/ark-server-tools/archive/v${ARK_TOOLS_VERSION}.tar.gz" \
-                | tar -xvzf - -C /tmp/ && \
-            bash -c "cd /tmp/ark-server-tools-${ARK_TOOLS_VERSION}/tools && bash -x install.sh ${USER}" && \
-            ln -s /usr/local/bin/arkmanager /usr/bin/arkmanager && \
-            install -d -o ${USER} ${ARK_SERVER_VOLUME} && \
-            su ${USER} -c "bash -x ${STEAMCMDDIR}/steamcmd.sh +login anonymous +quit" && \
-            apt-get -qq autoclean && apt-get -qq autoremove && apt-get -qq clean && \
-            rm -rf /tmp/* /var/cache/*
+EXPOSE	${GAME_CLIENT_PORT}/udp ${UDP_SOCKET_PORT}/udp ${SERVER_LIST_PORT}/udp ${RCON_PORT}/tcp
 
-COPY        bin/    /
-COPY        conf.d  ${TEMPLATE_DIRECTORY}
+VOLUME	["${ARK_SERVER_VOLUME}"]
 
-EXPOSE      ${GAME_CLIENT_PORT}/udp ${UDP_SOCKET_PORT}/udp ${SERVER_LIST_PORT}/udp ${RCON_PORT}/tcp
+WORKDIR	${ARK_SERVER_VOLUME}
 
-VOLUME      ["${ARK_SERVER_VOLUME}"]
-WORKDIR     ${ARK_SERVER_VOLUME}
+ENTRYPOINT	["/docker-entrypoint.sh"]
 
-ENTRYPOINT  ["/docker-entrypoint.sh"]
-CMD         []
+CMD	[]
