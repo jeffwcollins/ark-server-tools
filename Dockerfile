@@ -1,21 +1,20 @@
 FROM	cm2network/steamcmd:root
-LABEL	MAINTAINER="https://github.com/jeffwcollins/"
+LABEL	maintainer="https://github.com/jeffwcollins/"
 
 ARG	ARK_TOOLS_VERSION="1.6.64"
 #ARG	IMAGE_VERSION="dev"
 
 #ENV	IMAGE_VERSION="${IMAGE_VERSION}"
-ENV	ARK_TOOLS_DIR="${ARK_SERVER_VOLUME}/arkmanager"
 ENV	SESSION_NAME="Dockerized ARK Server with Ark Server Tools" \
 	SERVER_MAP="TheIsland" \
 	SERVER_PASSWORD="YouShallNotPass" \
 	ADMIN_PASSWORD="Th155houldD3f1n3tlyB3Chang3d" \
 	MAX_PLAYERS="20" \
 	GAME_MOD_IDS="" \
-	GAME_CLIENT_PORT="7779" \
-	UDP_SOCKET_PORT="7780" \
-	SERVER_LIST_PORT="27017" \
-	RCON_PORT="27022" \
+	GAME_CLIENT_PORT="7778" \
+	UDP_SOCKET_PORT="7779" \
+	SERVER_LIST_PORT="27015" \
+	RCON_PORT="27020" \
 	ENABLE_CROSSPLAY="false" \
 	DISABLE_BATTLEYE="false" \
 	UPDATE_ON_START="false" \
@@ -24,6 +23,7 @@ ENV	SESSION_NAME="Dockerized ARK Server with Ark Server Tools" \
 	WARN_ON_STOP="true" \
 	ARK_TOOLS_VERSION="${ARK_TOOLS_VERSION}" \
 	ARK_SERVER_VOLUME="/app" \
+	ARK_TOOLS_DIR="${ARK_SERVER_VOLUME}/arkmanager" \
 	TEMPLATE_DIRECTORY="/conf.d" \
 	STEAM_HOME="/home/${USER}" \
 	STEAM_USER="${USER}" \
@@ -49,8 +49,8 @@ RUN	set -x && \
 	apt-get -qq autoclean && apt-get -qq autoremove && apt-get -qq clean && \
 	rm -rf /tmp/* /var/cache/*
 
-COPY	bin/    /
-COPY	conf.d  ${TEMPLATE_DIRECTORY}
+COPY		bin/    /
+COPY		conf.d  ${TEMPLATE_DIRECTORY}
 
 EXPOSE	${GAME_CLIENT_PORT}/udp ${UDP_SOCKET_PORT}/udp ${SERVER_LIST_PORT}/udp ${RCON_PORT}/tcp
 

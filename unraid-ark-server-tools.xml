@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<Container version="2">
+	<!-- Find and replace 'APPNAME' with the name of the application -->
+	<!-- Find and replace 'PROJECTURL' with the project URL of the application -->
+	<!-- Find and replace 'OVERVIEWTEXT' with the description of the application -->
+	<!-- Find and replace 'CACATEGORY' with the CA category of the application -->
+	<!-- Find and replace 'THREAD' with the forum ID after creating the Support Thread -->
+	<!-- Find and replace '0000' with the Web UI port of the application -->
+    <!-- Remove any unrequired paths, e.g. /data /media -->
+    <!-- Remove line containing 'RemoveFromCA' -->
+    <!-- Remove these comments -->
+    <Name>ArkServerTools</Name>
+	<Beta>true</Beta>
+    <Category>Game Servers</Category>
+    <Repository>jeffwcollins/ark-server-tools</Repository>
+    <Registry>ghcr.io/jeffwcollins/ark-server-tools:latest</Registry>
+    <Network>bridge</Network>
+    <Privileged>false</Privileged>
+    <PrivilegedReq>false</PrivilegedReq>
+    <ExtraParams></ExtraParams>
+    <Shell>bash</Shell>
+    <GitHub>https://github.com/jeffwcollins/ark-server-tools</GitHub>
+    <ReadMe>https://github.com/jeffwcollins/ark-server-tools/blob/main/README.md</ReadMe>
+    <Support>https://forums.unraid.net/topic/THREAD/</Support>
+    <Project>PROJECTURL</Project>
+    <Overview>OVERVIEWTEXT</Overview>
+    <WebUI>null</WebUI>
+    <TemplateURL>https://raw.githubusercontent.com/jeffwcollins/docker-templates/master/jeffwcollins/APPNAME.xml</TemplateURL>
+    <Icon>https://raw.githubusercontent.com/binhex/docker-templates/master/binhex/images/APPNAME-icon.png</Icon>
+	<RemoveFromCA>true</RemoveFromCA><!-- REMOVE THIS LINE -->
+    <Date>2025-01-07</Date>
+    <Changes></Changes>
+    <Config Name="Port: Web Interface" Target="0000" Default="0000" Mode="tcp" Description="This is the Web UI port for the application." Type="Port" Display="always" Required="true" Mask="false"/>
+
+    <Config Name="Path: /config" Target="/config" Default="/mnt/user/appdata/APPNAME" Mode="rw" Description="This is the container path to your configuration files, e.g. databases, configuration files, logs etc." Type="Path" Display="always" Required="true" Mask="false"/>
+    <Config Name="Path: /media" Target="/media" Default="/mnt/user" Mode="rw" Description="This is the container path to your media files, e.g. movies, tv, music, pictures etc." Type="Path" Display="always" Required="false" Mask="false"/>
+	<Config Name="Path: /data" Target="/data" Default="" Mode="rw" Description="This is the container path to your downloaded files or user created content." Type="Path" Display="always" Required="true" Mask="false"/>
+
+    <Config Name="Variable: SHARED_NETWORK" Target="SHARED_NETWORK" Default="no|yes" Description="Specify whether this container is sharing the network with another VPN container, if set to 'yes' then this container will stop when the VPN container is stopped." Type="Variable" Display="always" Required="false" Mask="false"/>
+    <Config Name="Variable: PUID" Target="PUID" Default="99" Description="User ID for the running container" Type="Variable" Display="advanced" Required="true" Mask="false"/>
+    <Config Name="Variable: PGID" Target="PGID" Default="100" Description="Group ID for the running container" Type="Variable" Display="advanced" Required="true" Mask="false"/>
+    <Config Name="Variable: UMASK" Target="UMASK" Default="000" Description="UMASK for the running container" Type="Variable" Display="advanced" Required="true" Mask="false"/>
+</Container>

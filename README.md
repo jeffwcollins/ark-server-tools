@@ -183,6 +183,4 @@ Then, `arkmanager` will install / update `ark` using your provided login.
 If you upgrade from an image-version prior to the timestamp `1656497302` you'll have to edit `line 15` in `arkmanager.cfg`.  
 Replace with: `steamlogin="${STEAM_LOGIN}"`
 
-## Sponsors
 
-[@Skyfay](https://github.com/Skyfay) - [skyfay.ch](https://skyfay.ch)
