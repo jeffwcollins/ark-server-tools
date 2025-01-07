@@ -60,4 +60,4 @@ WORKDIR	${ARK_SERVER_VOLUME}
 
 ENTRYPOINT	["/docker-entrypoint.sh"]
 
-CMD	[]
+CMD		[]
